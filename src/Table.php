@@ -160,6 +160,14 @@ class Table
     /**
      * @return bool
      */
+    public function hasSimplePrimaryKey() : bool
+    {
+        return $this->hasPrimaryKey() && !$this->hasMultiplePrimaryKey();
+    }
+
+    /**
+     * @return bool
+     */
     public function hasMultiplePrimaryKey() : bool
     {
         return (count($this->_primaryKey) > 1);

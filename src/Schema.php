@@ -57,12 +57,33 @@ class Schema
     /**
      * @param string $parentTable
      * @param string $childTable
+     * @param string $mapTableName
+     * @return Table
+     */
+    public function getMapTable(string $parentTable, string $childTable, string $mapTableName) : Table
+    {
+        $mapTable = $this->getTable($mapTableName);
+
+        if (!$mapTable->hasReference($parentTable) || !$mapTable->hasReference($childTable)) {
+            throw new LogicException("Table {$mapTableName} does not map tables $parentTable, $childTable");
+        }
+
+        return $mapTable;
+    }
+
+    /**
+     * @param string $parentTable
+     * @param string $childTable
      * @return Table
      */
     public function findMapTable(string $parentTable, string $childTable) : Table
     {
         foreach ($this->getTables() as $table) {
-            if ($table->hasReference($parentTable) && $table->hasReference($childTable)) {
+            if (
+                $table->hasReference($parentTable) &&
+                $table->hasReference($childTable) &&
+                !$table->hasSimplePrimaryKey()
+            ) {
                 return $table;
             }
         }
